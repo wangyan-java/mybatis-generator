@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE generatorConfiguration
+        PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
+        "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
+<generatorConfiguration>
+    <properties resource="generator.properties"></properties>
+    <!--location只能使用绝对路径-->
+    <classPathEntry location="D:\java\maven\.m2\repository\mysql\mysql-connector-java\5.1.6\mysql-connector-java-5.1.6.jar"/>
+    <!--defaultModelType:conditional:*这是默认值*,这个模型和下面的hierarchical类似，除了如果那个单独的类将只包含一个字段，\
+    将不会生成一个单独的类。 因此,如果一个表的主键只有一个字段,那么不会为该字段生成单独的实体类,会将该字段合并到基本实体类中
+    flat:该模型为每一张表只生成一个实体类。这个实体类包含表中的所有字段。**这种模型最简单，推荐使用。-->
+    <context id="default" targetRuntime="MyBatis3" defaultModelType="flat">
+        <!--生成equal  ${}-->
+        <!--<plugin type="org.mybatis.generator.plugins.EqualsHashCodePlugin"></plugin>-->
+        <!--生成toString-->
+        <!--<plugin type="org.mybatis.generator.plugins.ToStringPlugin"></plugin>-->
+        <!-- 生成的pojo，将implements Serializable -->
+        <plugin type="org.mybatis.generator.plugins.SerializablePlugin"></plugin>
+
+        <!-- 是否去除自动生成的注释 true：是 ： false:否    type 自定义注释，读取数据库表中文注释-->
+        <commentGenerator type="com.wy.demo.generator.MyCommentGenerator">
+            <!-- 这个元素用来去除指定生成的注释中是否包含生成的日期 false:表示保护 -->
+            <!-- 如果生成日期，会造成即使修改一个字段，整个实体类所有属性都会发生变化，不利于版本控制，所以设置为true -->
+            <!--<property name="suppressDate" value="true"/>-->
+            <!-- 是否去除自动生成的注释 true：是 ： false:否 -->
+            <!--<property name="suppressAllComments" value="true"/>-->
+        </commentGenerator>
+        <!--数据库链接URL，用户名、密码 -->
+        <jdbcConnection driverClass="${db.driver}"
+                        connectionURL="${db.url}" userId="${db.username}" password="${db.password}">
+        </jdbcConnection>
+
+        <!-- 类型转换 -->
+        <javaTypeResolver>
+            <!-- 默认false，把JDBC DECIMAL 和 NUMERIC 类型解析为 Integer true，把JDBC DECIMAL
+                和 NUMERIC 类型解析为java.math.BigDecimal -->
+            <property name="forceBigDecimals" value="false" />
+        </javaTypeResolver>
+
+        <!-- 生成模型的包名和位置 文件夹自己定义 targetProject="target"在target目录下 -->
+        <javaModelGenerator targetPackage="${generator.targetPackage}"
+                            targetProject="${generator.targetProject}">
+            <property name="enableSubPackages" value="true"/>
+            <property name="trimStrings" value="true"/>
+        </javaModelGenerator>
+        <!-- 生成映射文件的包名和位置 文件夹自己定义-->
+        <sqlMapGenerator targetPackage="${generator.targetPackage}"
+                         targetProject="${generator.targetProject}">
+            <property name="enableSubPackages" value="true"/>
+        </sqlMapGenerator>
+        <!-- 生成DAO的包名和位置 文件夹自己定义-->
+        <javaClientGenerator type="XMLMAPPER"
+                             targetPackage="${generator.targetPackage}" implementationPackage="com.wy.user.impl"
+                             targetProject="${generator.targetProject}">
+            <property name="enableSubPackages" value="true"/>
+        </javaClientGenerator>
+
+        <!-- 列出要生成代码的所有表，这里配置的是不生成Example文件 -->
+        <!-- schema即为数据库名 tableName为对应的数据库表 domainObjectName是要生成的实体类 enable*ByExample
+                   是否生成 example类   -->
+        <table tableName="${gererator.tableName}" domainObjectName="${gererator.entityName}"
+               enableCountByExample="false" enableUpdateByExample="false"
+               enableDeleteByExample="false" enableSelectByExample="false"
+               selectByExampleQueryId="false">
+            <!-- 忽略列，不生成bean 字段
+            <ignoreColumn column="FRED" />-->
+            <!-- 指定列的java数据类型
+            <columnOverride column="LONG_VARCHAR_FIELD" jdbcType="VARCHAR" />  -->
+            <!-- 用于指定生成实体类时是否使用实际的列名作为实体类的属性名。false是 Camel Case风格-->
+            <property name="useActualColumnNames" value="false" />
+        </table>
+    </context>
+</generatorConfiguration>
